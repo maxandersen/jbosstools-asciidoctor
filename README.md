@@ -1,4 +1,4 @@
-= JBoss Tools Asciidoctor experiment
+# JBoss Tools Asciidoctor experiment
 
 Experiment to check if can load and render asciidoc docs in Eclipse.
 
@@ -7,7 +7,7 @@ Demo: http://screencast.com/t/tkHe4nq7F
 Contributions *very* welcome - this is just a proof-of-concept for now but
 feel free to submit patches and/or fork it and make it something different :)
 
-== How to build
+## How to build
 
 To import into eclipse we need to tell maven to go get the mvn dependencies. 
 
@@ -25,7 +25,7 @@ Open a file (any standard eclipse text based editor should work)
 
 Start typing, any change triggers an update to the asciidoctor view.
 
-== Outstanding issues
+## Outstanding issues
 
 - The boot of asciidoctor is happening as a big hack - awaiting a solution over at https://github.com/asciidoctor/asciidoctor-java-integration/issues/22
 - Renders the full document on every change (should have a "grace" period before updating)
