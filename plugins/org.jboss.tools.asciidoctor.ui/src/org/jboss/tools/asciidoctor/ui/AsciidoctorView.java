@@ -1,23 +1,36 @@
 package org.jboss.tools.asciidoctor.ui;
 
 import java.util.Collections;
+import java.util.Map;
 
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Asciidoctor.Factory;
+import org.asciidoctor.OptionsBuilder;
+import org.asciidoctor.SafeMode;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class AsciidoctorView extends ViewPart {
 
@@ -28,106 +41,114 @@ public class AsciidoctorView extends ViewPart {
 
 	private Browser browser;
 
-	final private ISelectionListener selectionlistener;
+	private IDocument currentDocument;
 
 	Asciidoctor asciidoctor;
 
-	public AsciidoctorView() {
+	private IDocumentListener docListener = new IDocumentListener() {
 
-		selectionlistener = new ISelectionListener() {
+		@Override
+		public void documentChanged(DocumentEvent event) {
 
-			@Override
-			public void selectionChanged(IWorkbenchPart arg0, ISelection arg1) {
-				if (browser != null) {
-					try {
+			String content = event.getDocument().get();
 
-						if (asciidoctor == null) {
-							asciidoctor = Factory.create();
-						}
+			updateViewer(content);
+		}
 
-						String string = "*This* is it at " + arg1.toString()
-								+ " from _" + arg0.getTitle() + "_";
-						String rendered = asciidoctor.render(string,
-								Collections.EMPTY_MAP);
-						System.out.println(rendered);
-						browser.setText(rendered);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+		@Override
+		public void documentAboutToBeChanged(DocumentEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+	};
+
+	private IPartListener2 partListener = new IPartListener2() {
+		
+		@Override
+		public void partVisible(IWorkbenchPartReference arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void partOpened(IWorkbenchPartReference part) {
+
+		}
+
+		@Override
+		public void partInputChanged(IWorkbenchPartReference arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void partHidden(IWorkbenchPartReference arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void partDeactivated(IWorkbenchPartReference arg0) {
+
+		}
+
+		@Override
+		public void partClosed(IWorkbenchPartReference arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void partBroughtToTop(IWorkbenchPartReference arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void partActivated(IWorkbenchPartReference part) {
+			if(part instanceof IEditorReference) {
+				IEditorReference ier = (IEditorReference) part;
+				IEditorPart editor = ier.getEditor(false);
+				if(editor instanceof ITextEditor) {
+					setupEditor((ITextEditor) editor);
 				}
+			} else if (part instanceof ITextEditor) {
+				setupEditor((ITextEditor) part);
 			}
-		};
+		}
+
+		private void setupEditor(ITextEditor editor) {
+			IDocument document = editor.getDocumentProvider().getDocument(
+					editor.getEditorInput());
+
+			if (currentDocument != null) {
+				currentDocument.removeDocumentListener(docListener);
+				currentDocument = null;
+			} else {
+				document.addPrenotifiedDocumentListener(docListener);
+			}
+		}
+	};
+
+	public AsciidoctorView() {
 	}
 
-	/**
-	 * This is a callback that will allow us to create the viewer and initialize
-	 * it.
-	 */
 	public void createPartControl(Composite parent) {
 
-		getSite().getWorkbenchWindow().getSelectionService()
-				.addSelectionListener(selectionlistener);
+		getSite().getWorkbenchWindow().getActivePage()
+				.addPartListener(partListener);
 		browser = new Browser(parent, SWT.None);
-		makeActions();
-		hookContextMenu();
-		hookDoubleClickAction();
-		contributeToActionBars();
-	}
-
-	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				AsciidoctorView.this.fillContextMenu(manager);
-			}
-		});
-		Menu menu = menuMgr.createContextMenu(browser);
-		browser.setMenu(menu);
-		// getSite().registerContextMenu(menuMgr, this);
-	}
-
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
-
-	private void fillLocalPullDown(IMenuManager manager) {
-		// manager.add(action1);
-		// manager.add(new Separator());
-		// manager.add(action2);
-	}
-
-	private void fillContextMenu(IMenuManager manager) {
-		// manager.add(action1);
-		// manager.add(action2);
-		// Other plug-ins can contribute there actions here
-		// manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
-
-	private void fillLocalToolBar(IToolBarManager manager) {
-		// manager.add(action1);
-		// manager.add(action2);
-	}
-
-	private void makeActions() {
-
-	}
-
-	private void hookDoubleClickAction() {
-		/*
-		 * viewer.addDoubleClickListener(new IDoubleClickListener() { public
-		 * void doubleClick(DoubleClickEvent event) { doubleClickAction.run(); }
-		 * });
-		 */
 	}
 
 	@Override
 	public void dispose() {
-		ISelectionService s = getSite().getWorkbenchWindow()
-				.getSelectionService();
-		s.removeSelectionListener(selectionlistener);
+		getSite().getWorkbenchWindow().getActivePage()
+		.removePartListener(partListener);
+
+		if(currentDocument!=null) {
+			currentDocument.removeDocumentListener(docListener);
+		}
+		
 		super.dispose();
 	}
 
@@ -137,4 +158,28 @@ public class AsciidoctorView extends ViewPart {
 	public void setFocus() {
 		browser.setFocus();
 	}
+
+	void updateViewer(String asciidoc) {
+		if (browser != null) {
+			try {
+
+				if (asciidoctor == null) {
+					asciidoctor = Factory.create();
+				}
+
+				Map<String, Object> options = OptionsBuilder.options()
+		                .compact(false)
+		                .headerFooter(true)
+		                .safe(SafeMode.UNSAFE)
+		                .backend("html")
+		                .asMap();
+				
+				String rendered = asciidoctor.render(asciidoc, options);
+				browser.setText(rendered);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }
