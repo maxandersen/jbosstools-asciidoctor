@@ -2,6 +2,10 @@
 
 Experiment to check if can load and render asciidoc docs in Eclipse.
 
+Demo: http://screencast.com/t/tkHe4nq7F
+
+== How to build
+
 To import into eclipse we need to tell maven to go get the mvn dependencies. 
 
 That is done the fastest by running:
@@ -10,13 +14,22 @@ That is done the fastest by running:
 
 And then `File > Import > Existing project` from Eclipse and the magic is in AsciidoctorView.
 
-To test it, run this plugin from 'Eclipse with Run As... > Eclipse Application'
+To test it, run this plugin from 'Eclipse with Run As... > Eclipse Application' (you might need to set `-XX:MaxPermSize=256m` to avoid running out of permgen space)
 
 Open the Asciidoctor View.
 
-Select something in a project (anything, that will trigger a selection changed event) - when creating asciidoctor it currently fails to load the asciidoctor resources.
+Open a file (any standard eclipse text based editor should work)
 
-Fix it at https://github.com/maxandersen/jbosstools-asciidoctor/blob/master/plugins/org.jboss.tools.asciidoctor.ui/src/org/jboss/tools/asciidoctor/ui/AsciidoctorView.java#L45
+Start typing, any change triggers an update to the asciidoctor view.
+
+== Outstanding issues
+
+- The boot of asciidoctor is happening as a big hack - awaiting a solution over at https://github.com/asciidoctor/asciidoctor-java-integration/issues/22
+- Renders the full document on every change (should have a "grace" period before updating)
+- Loading asciidoctor on main event thread (should use a Future to avoid blocking UI)
+- Handle images - awaiting https://github.com/asciidoctor/asciidoctor-java-integration/issues/25
+- Render .adoc files/directories to html on save? (General idea: add asciidoc builder that you configure by adding directories as "asciidoc content" and the plugin will render these files/directories on "full build" and when files in here are opened treat them as asciidoc)
+
 
 
 
