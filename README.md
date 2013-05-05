@@ -4,6 +4,9 @@ Experiment to check if can load and render asciidoc docs in Eclipse.
 
 Demo: http://screencast.com/t/tkHe4nq7F
 
+Contributions *very* welcome - this is just a proof-of-concept for now but
+feel free to submit patches and/or fork it and make it something different :)
+
 == How to build
 
 To import into eclipse we need to tell maven to go get the mvn dependencies. 
