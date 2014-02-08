@@ -20,14 +20,15 @@ import org.eclipse.mylyn.wikitext.core.parser.markup.Block;
 
 /**
  * Asciidoc underlined headings.
- * 
+ *
  * @author Stefan Seelmann
  */
 public class UnderlinedHeadingBlock extends Block implements ReadAheadBlock {
 
-	private static final Pattern h1pattern = Pattern.compile("=+\\s*"); //$NON-NLS-1$
-
 	private static final Pattern h2pattern = Pattern.compile("-+\\s*"); //$NON-NLS-1$
+	private static final Pattern h3pattern = Pattern.compile("~+\\s*"); //$NON-NLS-1$
+	private static final Pattern h4pattern = Pattern.compile("\\^+\\s*"); //$NON-NLS-1$
+	private static final Pattern h5pattern = Pattern.compile("\\++\\s*"); //$NON-NLS-1$
 
 	private int blockLineCount;
 
@@ -39,11 +40,17 @@ public class UnderlinedHeadingBlock extends Block implements ReadAheadBlock {
 		String nextLine = lookAheadReader.lookAhead();
 		if (nextLine == null) {
 			return false;
-		} else if (h1pattern.matcher(nextLine).matches()) {
-			level = 1;
-			return true;
 		} else if (h2pattern.matcher(nextLine).matches()) {
 			level = 2;
+			return true;
+		} else if (h3pattern.matcher(nextLine).matches()) {
+			level = 3;
+			return true;
+		} else if (h4pattern.matcher(nextLine).matches()) {
+			level = 4;
+			return true;
+		} else if (h5pattern.matcher(nextLine).matches()) {
+			level = 5;
 			return true;
 		} else {
 			return false;

@@ -15,7 +15,7 @@ import org.eclipse.mylyn.wikitext.tests.TestUtil;
 
 /**
  * http://daringfireball.net/projects/asciidoc/syntax
- * 
+ *
  * @author Stefan Seelmann
  */
 public class AsciidocLanguageTest extends AsciidocLanguageTestBase {
@@ -24,27 +24,21 @@ public class AsciidocLanguageTest extends AsciidocLanguageTestBase {
 
 		StringBuilder text = new StringBuilder();
 		text.append("Header 1\n");
-		text.append("======\n");
+		text.append("-------\n");
 		text.append("\n");
-		text.append("Lorem ipsum **dolor** sit amet, \n");
-		text.append("consetetur adipisici elit.\n");
+		text.append("Lorem ipsum *dolor* sit amet, \n");
 		text.append("\n");
-		text.append("***\n");
+		text.append("=== Header 2\n");
 		text.append("\n");
-		text.append("## Header 2\n");
-		text.append("\n");
-		text.append("> Blockquote\n");
-		text.append("\n");
-		text.append("    Code block\n");
+		text.append("consetetur _adipisici_ elit.\n");
 
 		String html = parseToHtml(text.toString());
 		TestUtil.println("HTML: " + html);
-		assertTrue(html.contains("<h1>Header 1"));
+
+		assertTrue(html.contains("Header 1</h2>"));
 		assertTrue(html.contains("<p>Lorem ipsum"));
 		assertTrue(html.contains("<strong>dolor"));
-		assertTrue(html.contains("<hr/>"));
-		assertTrue(html.contains("<h2>Header 2<"));
-		assertTrue(html.contains("<blockquote><p>Blockquote"));
-		assertTrue(html.contains("<pre><code>Code block"));
+		assertTrue(html.contains("Header 2</h3>"));
+		assertTrue(html.contains("<em>adipisici</em>"));
 	}
 }

@@ -13,12 +13,10 @@ package org.eclipse.mylyn.wikitext.asciidoc.core;
 
 import java.util.List;
 
-import org.eclipse.mylyn.internal.wikitext.asciidoc.core.block.CodeBlock;
 import org.eclipse.mylyn.internal.wikitext.asciidoc.core.block.HeadingBlock;
-import org.eclipse.mylyn.internal.wikitext.asciidoc.core.block.HorizontalRuleBlock;
 import org.eclipse.mylyn.internal.wikitext.asciidoc.core.block.InlineHtmlBlock;
 import org.eclipse.mylyn.internal.wikitext.asciidoc.core.block.ParagraphBlock;
-import org.eclipse.mylyn.internal.wikitext.asciidoc.core.block.QuoteBlock;
+import org.eclipse.mylyn.internal.wikitext.asciidoc.core.block.PreformattedBlock;
 import org.eclipse.mylyn.internal.wikitext.asciidoc.core.block.UnderlinedHeadingBlock;
 import org.eclipse.mylyn.internal.wikitext.asciidoc.core.phrase.BackslashEscapePhraseModifier;
 import org.eclipse.mylyn.internal.wikitext.asciidoc.core.phrase.SimplePhraseModifier;
@@ -33,7 +31,7 @@ import org.eclipse.mylyn.wikitext.core.parser.markup.token.PatternLineBreakRepla
 
 /**
  * A markup language implementing Asciidoc syntax. http://daringfireball.net/projects/asciidoc/syntax
- * 
+ *
  * @author Stefan Seelmann
  * @since 1.8
  */
@@ -57,39 +55,20 @@ public class AsciidocLanguage extends AbstractMarkupLanguage {
 		phraseModifierSyntax.add(new HtmlEndTagPhraseModifier());
 		phraseModifierSyntax.add(new HtmlStartTagPhraseModifier());
 		// backslash escaped span elements
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("**")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("__")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("*")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("_")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("\\")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("`")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("{")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("}")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("[")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("]")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("(")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier(")")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("#")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("+")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("-")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier(".")); //$NON-NLS-1$ 
-		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("!")); //$NON-NLS-1$ 
+		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("+")); //$NON-NLS-1$
+		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("*")); //$NON-NLS-1$
+		phraseModifierSyntax.add(new BackslashEscapePhraseModifier("_")); //$NON-NLS-1$
 		// emphasis span elements
-		phraseModifierSyntax.add(new SimplePhraseModifier("``", SpanType.CODE)); //$NON-NLS-1$
-		phraseModifierSyntax.add(new SimplePhraseModifier("`", SpanType.CODE)); //$NON-NLS-1$
-		phraseModifierSyntax.add(new SimplePhraseModifier("**", SpanType.STRONG)); //$NON-NLS-1$
-		phraseModifierSyntax.add(new SimplePhraseModifier("__", SpanType.STRONG)); //$NON-NLS-1$
-		phraseModifierSyntax.add(new SimplePhraseModifier("*", SpanType.EMPHASIS)); //$NON-NLS-1$
+		phraseModifierSyntax.add(new SimplePhraseModifier("+", SpanType.CODE)); //$NON-NLS-1$
+		phraseModifierSyntax.add(new SimplePhraseModifier("*", SpanType.STRONG)); //$NON-NLS-1$
 		phraseModifierSyntax.add(new SimplePhraseModifier("_", SpanType.EMPHASIS)); //$NON-NLS-1$
 	}
 
 	@Override
 	protected void addStandardBlocks(List<Block> blocks, List<Block> paragraphBreakingBlocks) {
-		blocks.add(new CodeBlock());
-		blocks.add(new HorizontalRuleBlock());
+		blocks.add(new PreformattedBlock());
 		blocks.add(new HeadingBlock());
 		blocks.add(new InlineHtmlBlock());
-		blocks.add(new QuoteBlock());
 	}
 
 	@Override
