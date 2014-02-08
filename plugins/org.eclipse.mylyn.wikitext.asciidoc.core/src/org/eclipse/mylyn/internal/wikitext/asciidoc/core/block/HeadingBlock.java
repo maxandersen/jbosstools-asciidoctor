@@ -19,12 +19,12 @@ import org.eclipse.mylyn.wikitext.core.parser.markup.Block;
 
 /**
  * Asciidoc headings.
- * 
+ *
  * @author Stefan Seelmann
  */
 public class HeadingBlock extends Block {
 
-	private static final Pattern pattern = Pattern.compile("(={1,6})\\s*(.+?)\\s*(?:#*\\s*)?"); //$NON-NLS-1$
+	private static final Pattern pattern = Pattern.compile("(={2,5})\\s*(.+?)\\s*(?:=*\\s*)?"); //$NON-NLS-1$
 
 	private Matcher matcher;
 

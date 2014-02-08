@@ -11,307 +11,267 @@
 
 package org.eclipse.mylyn.internal.wikitext.asciidoc.tests;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.mylyn.wikitext.tests.TestUtil;
 
 /**
- * Tests for asciidoc block elements. Follows specification at
- * <a>http://daringfireball.net/projects/asciidoc/syntax#block</a>.
- * 
+ * Tests for asciidoc block elements.
+ *
  * @author Stefan Seelmann
  */
 public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase {
 
-	/*
-	 * Paragraphs and Line Breaks. A paragraph is simply one or more consecutive lines of text, separated by one or more
-	 * blank lines. (A blank line is any line that looks like a blank line â€” a line containing nothing but spaces or
-	 * tabs is considered blank.) Normal paragraphs should not be indented with spaces or tabs.
-	 */
 	public void testParagraphWithOneLine() {
 		String html = parseToHtml("a paragraph");
 		TestUtil.println("HTML: " + html);
-		assertEquals("<p>a paragraph</p>\n", html);
+		assertTrue(html.contains("<p>a paragraph</p>"));
 	}
 
 	public void testParagraphWithMulitpleLines() {
 		String html = parseToHtml("a paragraph\nwith multiple\nlines");
 		TestUtil.println("HTML: " + html);
-		assertEquals("<p>a paragraph\nwith multiple\nlines</p>\n", html);
+		assertTrue(html.contains("<p>a paragraph\nwith multiple\nlines</p>"));
 	}
 
 	public void testParagraphsSeparatedBySingleBlankLine() {
 		String html = parseToHtml("a paragraph\n\nanother paragraph\n\n");
 		TestUtil.println("HTML: " + html);
-		assertEquals("<p>a paragraph</p>\n<p>another paragraph</p>\n", html);
+		assertTrue(html.contains("<p>a paragraph</p>"));
+		assertTrue(html.contains("<p>another paragraph</p>"));
 	}
 
 	public void testParagraphsSeparatedByMulitpleBlankLines() {
 		String html = parseToHtml("a paragraph\n\n\nanother paragraph\n\n\n");
 		TestUtil.println("HTML: " + html);
-		assertEquals("<p>a paragraph</p>\n<p>another paragraph</p>\n", html);
+		assertTrue(html.contains("<p>a paragraph</p>"));
+		assertTrue(html.contains("<p>another paragraph</p>"));
 	}
 
 	public void testParagraphsSeparatedByMulitpleBlankLinesWithSpacesAndTabs() {
 		String html = parseToHtml("a paragraph\n \n\t\nanother paragraph");
 		TestUtil.println("HTML: " + html);
-		assertEquals("<p>a paragraph</p>\n<p>another paragraph</p>\n", html);
+		assertTrue(html.contains("<p>a paragraph</p>"));
+		assertTrue(html.contains("<p>another paragraph</p>"));
 	}
 
-	/*
-	 * When you do want to insert a <br />
-	 * break tag using asciidoc, you end a line with two or more spaces, then type return.
-	 */
+	/* FIXME: this is the real line breack in paragraph syntax.
 	public void testLineBreakInParagraph() {
-		String html = parseToHtml("line  1  \nline  2    \nline  3");
+		String html = parseToHtml("line  1 +\nline  2 +\nline  3");
 		TestUtil.println("HTML: " + html);
-		assertEquals("<p>line  1<br/>\nline  2<br/>\nline  3</p>\n", html);
+		assertTrue(Pattern.compile(
+				"<p>line  1<br/?>\nline  2<br/?>\nline  3</p>")
+				.matcher(html)
+				.find());
 	}
+	*/
 
 	/*
-	 * Headers. Atx-style headers use 1-6 hash characters at the start of the line, corresponding to header levels 1-6.
+	 * Headers.
 	 */
-	public void testAtxStyleHeaderH1() {
-		String h1 = parseToHtml("# This is an H1");
-		TestUtil.println("HTML: " + h1);
-		assertEquals("<h1>This is an H1</h1>", h1);
+	public void testEqStyleHeaderLevel1() {
+		String html = parseToHtml("== This is an H2");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>This is an H2</h2>")
+				.matcher(html)
+				.find());
 	}
 
-	public void testAtxStyleHeaderH2() {
-		String h2 = parseToHtml("## This is an H2");
-		TestUtil.println("HTML: " + h2);
-		assertEquals("<h2>This is an H2</h2>", h2);
+	public void testEqStyleHeaderLevel2() {
+		String html = parseToHtml("=== This is an H3");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h3[^>]*>This is an H3</h3>")
+				.matcher(html)
+				.find());
 	}
 
-	public void testAtxStyleHeaderH3() {
-		String h3 = parseToHtml("### This is an H3");
-		TestUtil.println("HTML: " + h3);
-		assertEquals("<h3>This is an H3</h3>", h3);
+	public void testEqStyleHeaderLevel3() {
+		String html = parseToHtml("==== This is an H4");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h4[^>]*>This is an H4</h4>")
+				.matcher(html)
+				.find());
 	}
 
-	public void testAtxStyleHeaderH4() {
-		String h4 = parseToHtml("#### This is an H4");
-		TestUtil.println("HTML: " + h4);
-		assertEquals("<h4>This is an H4</h4>", h4);
+	public void testEqStyleHeaderLevel4() {
+		String html = parseToHtml("===== This is an H5");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>This is an H5</h5>")
+				.matcher(html)
+				.find());
 	}
 
-	public void testAtxStyleHeaderH5() {
-		String h5 = parseToHtml("##### This is an H5");
-		TestUtil.println("HTML: " + h5);
-		assertEquals("<h5>This is an H5</h5>", h5);
+	/* FIXME:
+	public void testEqStyleHeaderNotH6() {
+		String html = parseToHtml("====== This is not h6");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>====== This is not h6</p>"));
 	}
-
-	public void testAtxStyleHeaderH6() {
-		String h6 = parseToHtml("###### This is an H6");
-		TestUtil.println("HTML: " + h6);
-		assertEquals("<h6>This is an H6</h6>", h6);
-	}
+	*/
 
 	/*
-	 * Optionally, you may "close" atx-style headers. This is purely cosmetic - you can use this if you think it looks
-	 * better. The closing hashes don't even need to match the number of hashes used to open the header. (The number of
-	 * opening hashes determines the header level.)
+	 * Optionally, you may "close" equals-style headers.
 	 */
-	public void testClosedAtxStyleHeaderH1() {
-		String h1 = parseToHtml("# This is an H1 #");
-		TestUtil.println("HTML: " + h1);
-		assertEquals("<h1>This is an H1</h1>", h1);
+	public void testClosedEqStyleHeaderLevel1() {
+		String html = parseToHtml("== This is also H2 ==");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>This is also H2</h2>")
+				.matcher(html)
+				.find());
 	}
 
-	public void testClosedAtxStyleHeaderH2() {
-		String h2 = parseToHtml("## This is an H2 ##");
-		TestUtil.println("HTML: " + h2);
-		assertEquals("<h2>This is an H2</h2>", h2);
+	public void testClosedEqStyleHeaderLevel2() {
+		String html = parseToHtml("=== This is also H3 ===");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h3[^>]*>This is also H3</h3>")
+				.matcher(html)
+				.find());
 	}
 
-	public void testClosedAtxStyleHeaderH3() {
-		String h3 = parseToHtml("### This is an H3 ###");
-		TestUtil.println("HTML: " + h3);
-		assertEquals("<h3>This is an H3</h3>", h3);
+	public void testClosedEqStyleHeaderLevel3() {
+		String html = parseToHtml("==== This is also H4 ====");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h4[^>]*>This is also H4</h4>")
+				.matcher(html)
+				.find());
 	}
 
-	public void testClosedAtxStyleHeaderH4() {
-		String h4 = parseToHtml("#### This is an H4 ####");
-		TestUtil.println("HTML: " + h4);
-		assertEquals("<h4>This is an H4</h4>", h4);
+	public void testClosedEqStyleHeaderLevel4() {
+		String html = parseToHtml("===== This is also H5 =====");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>This is also H5</h5>")
+				.matcher(html)
+				.find());
 	}
 
-	public void testClosedAtxStyleHeaderH5() {
-		String h5 = parseToHtml("##### This is an H5 #####");
-		TestUtil.println("HTML: " + h5);
-		assertEquals("<h5>This is an H5</h5>", h5);
+	/* FIXME:
+	public void testClosedEqStyleHeaderNotH6() {
+		String html = parseToHtml("====== This is also not h6 ======");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>====== This is also not h6 ======</p>"));
 	}
+	 */
 
-	public void testClosedAtxStyleHeaderH6() {
-		String h6 = parseToHtml("###### This is an H6 ######");
-		TestUtil.println("HTML: " + h6);
-		assertEquals("<h6>This is an H6</h6>", h6);
+	/* FIXME:
+	public void testClosedEqStyleHeaderWithMoreClosingHashes() {
+		String html = parseToHtml("== This is an H2 again ==================");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>This is an H2 again ==================</h2>")
+				.matcher(html)
+				.find());
 	}
+	*/
 
-	public void testClosedAtxStyleHeaderWithMoreClosingHashes() {
-		String h1 = parseToHtml("# This is an H1 ################################");
-		TestUtil.println("HTML: " + h1);
-		assertEquals("<h1>This is an H1</h1>", h1);
-	}
-
+	/* FIXME:
 	public void testClosedAtxStyleHeaderWithLessCosingHashes() {
-		String h6 = parseToHtml("###### This is an H6 #");
-		TestUtil.println("HTML: " + h6);
-		assertEquals("<h6>This is an H6</h6>", h6);
-	}
-
-	/*
-	 * Setext-style headers are "underlined" using equal signs (for first-level headers) and dashes (for second-level
-	 * headers). Any number of underlining ='s or -'s will work.
-	 */
-	public void testUnderlinedHeaderH1() {
-		String h1 = parseToHtml("This is an H1\n============");
-		TestUtil.println("HTML: " + h1);
-		assertEquals("<h1>This is an H1</h1>", h1);
-	}
-
-	public void testUnderlinedHeaderH2() {
-		String h2 = parseToHtml("This is an H2\n------------");
-		TestUtil.println("HTML: " + h2);
-		assertEquals("<h2>This is an H2</h2>", h2);
-	}
-
-	public void testSingleCharUnderlinedHeaderH1() {
-		String h1 = parseToHtml("This is an H1\n= ");
-		TestUtil.println("HTML: " + h1);
-		assertEquals("<h1>This is an H1</h1>", h1);
-	}
-
-	public void testSingleCharUnderlinedHeaderH2() {
-		String h2 = parseToHtml("This is an H2\n- ");
-		TestUtil.println("HTML: " + h2);
-		assertEquals("<h2>This is an H2</h2>", h2);
-	}
-
-	/*
-	 * Blockquotes. asciidoc uses email-style > characters for blockquoting. It looks best if you hard wrap the text and
-	 * put a > before every line.
-	 */
-	public void testBlockquoteWithQuoteCharInEachLine() {
-		String h1 = parseToHtml("> Lorem ipsum dolor sit amet, \n>  consetetur adipisici elit.\n");
-		TestUtil.println("HTML: " + h1);
-		assertEquals("<blockquote><p>Lorem ipsum dolor sit amet, \nconsetetur adipisici elit.</p>\n</blockquote>", h1);
-	}
-
-	/*
-	 * asciidoc allows you to be lazy and only put the > before the first line of a hard-wrapped paragraph.
-	 */
-	public void testBlockquoteWithSingleQuoteChar() {
-		String h1 = parseToHtml("> Lorem ipsum dolor sit amet, \nconsetetur adipisici elit.\n");
-		TestUtil.println("HTML: " + h1);
-		assertEquals("<blockquote><p>Lorem ipsum dolor sit amet, \nconsetetur adipisici elit.</p>\n</blockquote>", h1);
-	}
-
-	/*
-	 * Blockquotes can be nested (i.e. a blockquote-in-a-blockquote) by adding additional levels of >.
-	 */
-	public void testNestedBlockquotes() {
-		String h1 = parseToHtml(">A1\n>>B1\n>A2\n");
-		TestUtil.println("HTML: " + h1);
-		assertEquals("<blockquote><p>A1</p>\n<blockquote><p>B1</p>\n</blockquote><p>A2</p>\n</blockquote>", h1);
-	}
-
-	/*
-	 * Blockquotes can contain other asciidoc elements, including headers, lists, and code blocks.
-	 */
-	public void testBlockquotesWithOtherElements() {
-		String h1 = parseToHtml(">#H1");
-		TestUtil.println("HTML: " + h1);
-		assertEquals("<blockquote><h1>H1</h1></blockquote>", h1);
-	}
-
-	/*
-	 * asciidoc wraps a code block in both pre and code tags. To produce a code block in asciidoc, simply indent every
-	 * line of the block by at least 4 spaces or 1 tab.
-	 */
-	public void testCodeBlockIndentedByFourSpaces() {
-		String html = parseToHtml("    This is a code block.");
+		String html = parseToHtml("===== This is an H5 again ==");
 		TestUtil.println("HTML: " + html);
-		assertEquals("<pre><code>This is a code block.</code></pre>", html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>This is an H5 again ==</h5>")
+				.matcher(html)
+				.find());
 	}
+	*/
 
-	public void testCodeBlockIndentedByOneTab() {
-		String html = parseToHtml("\tThis is a code block.");
-		TestUtil.println("HTML: " + html);
-		assertEquals("<pre><code>This is a code block.</code></pre>", html);
-	}
 
 	/*
-	 * One level of indentation - 4 spaces or 1 tab - is removed from each line of the code block.
+	 * "underlined" headers
 	 */
-	public void testCodeBlockMultiLineIndentedByFourSpaces() {
-		String html = parseToHtml("    aaa\n        bbb\n            ccc\n    \n    continue after empty line");
+	public void testUnderlinedLevel1() {
+		String html = parseToHtml("This is an underlined H2\n------------------------");
 		TestUtil.println("HTML: " + html);
-		String expectedHtml = "<pre><code>aaa\n    bbb\n        ccc\n\ncontinue after empty line</code></pre>";
-		assertEquals(expectedHtml, html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>This is an underlined H2</h2>")
+				.matcher(html)
+				.find());
 	}
 
-	public void testCodeBlockMultiLineIndentedByOneTab() {
-		String html = parseToHtml("\taaa\n\t\tbbb\n\t\t\tccc\n\t\n\tcontinue after empty line");
+	public void testUnderlinedLevel2() {
+		String html = parseToHtml("This is an underlined H3\n~~~~~~~~~~~~~~~~~~~~~~~~");
 		TestUtil.println("HTML: " + html);
-		String expectedHtml = "<pre><code>aaa\n    bbb\n        ccc\n\ncontinue after empty line</code></pre>";
-		assertEquals(expectedHtml, html);
+		assertTrue(Pattern.compile(
+				"<h3[^>]*>This is an underlined H3</h3>")
+				.matcher(html)
+				.find());
+		}
+
+	public void testUnderlinedLevel3() {
+		String html = parseToHtml("This is an underlined H4\n^^^^^^^^^^^^^^^^^^^^^^^^");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h4[^>]*>This is an underlined H4</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel4() {
+		String html = parseToHtml("This is an underlined H5\n++++++++++++++++++++++++");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>This is an underlined H5</h5>")
+				.matcher(html)
+				.find());
+	}
+
+	//TODO: the "underline" line need to match exactly the length of the title.
+
+	public void testPreBlockIndentedByFourSpaces() {
+		String html = parseToHtml("    This is a pre block.");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<pre>This is a pre block.</pre>"));
+	}
+
+	public void testPreBlockIndentedByOneTab() {
+		String html = parseToHtml("\tThis is a pre block.");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<pre>This is a pre block.</pre>"));
 	}
 
 	/*
-	 * Within a code block, ampersands (&) and angle brackets (< and >) are automatically converted into HTML entities.
+	 * One level of indentation - 4 spaces or 1 tab - is removed from each line of the pre block.
+	 */
+	public void testPreBlockMultiLineIndentedByFourSpaces() {
+		String html = parseToHtml("    aaa\n        bbb\n            ccc");
+		TestUtil.println("HTML: " + html);
+		String expectedHtml = "<pre>aaa\n    bbb\n        ccc</pre>";
+		assertTrue(html.contains(expectedHtml));
+	}
+
+	public void testPreBlockMultiLineIndentedByOneTab() {
+		String html = parseToHtml("\taaa\n\t\tbbb\n\t\t\tccc");
+		TestUtil.println("HTML: " + html);
+		String expectedHtml = "<pre>aaa\n\tbbb\n\t\tccc</pre>";
+		assertTrue(html.contains(expectedHtml));
+	}
+
+	//TODO: no "continue after empty line" in pre block.
+
+	/**
+	 * Within a pre block, ampersands (&) and angle brackets (< and >) are automatically converted into HTML entities.
 	 */
 	public void testSpecialCharactersAreConvertedInCodeBlock() {
 		String html = parseToHtml("    <div class=\"footer\">\n    &copy; 2004 Foo Bar\n    </div>");
 		TestUtil.println("HTML: " + html);
-		String exptectedHtml = "<pre><code>&lt;div class=\"footer\"&gt;\n&amp;copy; 2004 Foo Bar\n&lt;/div&gt;</code></pre>";
-		assertEquals(exptectedHtml, html);
+		String expectedHtml = "<pre>&lt;div class=\"footer\"&gt;\n&amp;copy; 2004 Foo Bar\n&lt;/div&gt;</pre>";
+		assertTrue(html.contains(expectedHtml));
 	}
 
-	/*
+	/**
 	 * Regular asciidoc syntax is not processed within code blocks.
 	 */
 	public void testNoProcessingInCodeBlock() {
-		String html = parseToHtml("    ### Header 3\n    Lorem *ipsum*");
+		String html = parseToHtml("    === Header 3\n    Lorem *ipsum*");
 		TestUtil.println("HTML: " + html);
-		assertEquals("<pre><code>### Header 3\nLorem *ipsum*</code></pre>", html);
-	}
-
-	/*
-	 * Horizontal Rules. You can produce a horizontal rule tag ( hr/ ) by placing three or more hyphens, asterisks, or
-	 * underscores on a line by themselves. If you wish, you may use spaces between the hyphens or asterisks.
-	 */
-	public void testHorizontalRulesWithAsterisksAndSpaces() {
-		String html = parseToHtml("* * *");
-		TestUtil.println("HTML: " + html);
-		assertEquals("<hr/>", html);
-	}
-
-	public void testHorizontalRulesWithAsterisks() {
-		String html = parseToHtml("***");
-		TestUtil.println("HTML: " + html);
-		assertEquals("<hr/>", html);
-	}
-
-	public void testHorizontalRulesWithMoreAsterisks() {
-		String html = parseToHtml("*****");
-		TestUtil.println("HTML: " + html);
-		assertEquals("<hr/>", html);
-	}
-
-	public void testHorizontalRulesWithHyphensAndSpaces() {
-		String html = parseToHtml("- - -");
-		TestUtil.println("HTML: " + html);
-		assertEquals("<hr/>", html);
-	}
-
-	public void testHorizontalRulesWithHyphens() {
-		String html = parseToHtml("---------------------------------------");
-		TestUtil.println("HTML: " + html);
-		assertEquals("<hr/>", html);
-	}
-
-	public void testHorizontalRulesWithUnderscores() {
-		String html = parseToHtml("___");
-		TestUtil.println("HTML: " + html);
-		assertEquals("<hr/>", html);
+		String expectedHtml = "<pre>=== Header 3\nLorem *ipsum*</pre>";
+		assertTrue(html.contains(expectedHtml));
 	}
 }

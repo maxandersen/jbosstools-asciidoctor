@@ -19,11 +19,11 @@ import org.eclipse.mylyn.wikitext.core.parser.DocumentBuilder.BlockType;
 import org.eclipse.mylyn.wikitext.core.parser.markup.Block;
 
 /**
- * Asciidoc code block.
- * 
+ * Asciidoc preformatted block.
+ *
  * @author Stefan Seelmann
  */
-public class CodeBlock extends Block {
+public class PreformattedBlock extends Block {
 
 	private static final Pattern startPattern = Pattern.compile("(?: {4}|\\t)((?: {4}|\\t)*)(.*)"); //$NON-NLS-1$
 
@@ -44,7 +44,6 @@ public class CodeBlock extends Block {
 		// start of block
 		if (blockLineCount == 0) {
 			builder.beginBlock(BlockType.PREFORMATTED, new Attributes());
-			builder.beginBlock(BlockType.CODE, new Attributes());
 		}
 
 		// extract the content
@@ -61,9 +60,9 @@ public class CodeBlock extends Block {
 			builder.characters("\n"); //$NON-NLS-1$
 		}
 
-		// emit, replace intention tabs by 4 spaces, encode ampersands (&) and angle brackets (< and >)
+		// emit, handle intention, encode ampersands (&) and angle brackets (< and >)
 		if (intent != null) {
-			builder.characters(intent.replace("\t", "    ")); //$NON-NLS-1$ //$NON-NLS-2$
+			builder.characters(intent);
 		}
 		builder.characters(content);
 
@@ -74,7 +73,6 @@ public class CodeBlock extends Block {
 	@Override
 	public void setClosed(boolean closed) {
 		if (closed && !isClosed()) {
-			builder.endBlock();
 			builder.endBlock();
 		}
 		super.setClosed(closed);
