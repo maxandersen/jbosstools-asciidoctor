@@ -11,6 +11,8 @@
 
 package org.eclipse.mylyn.internal.wikitext.asciidoc.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.regex.Pattern;
 
 import org.eclipse.mylyn.wikitext.tests.TestUtil;
@@ -222,7 +224,194 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.find());
 	}
 
-	//TODO: the "underline" line need to match exactly the length of the title.
+	public void testUnderlinedLevel1LineMinusOneChar() {
+		String html = parseToHtml("Lorem Ipsum\n----------"); //title 11 chars, line 10 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>Lorem Ipsum</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel2LineMinusOneChar() {
+		String html = parseToHtml("Lorem Ipsum Dolor\n~~~~~~~~~~~~~~~~"); //title 17 chars, line 16 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h3[^>]*>Lorem Ipsum Dolor</h3>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel3LineMinusOneChar() {
+		String html = parseToHtml("LoremIpsumDolor\n^^^^^^^^^^^^^^"); //title 15 chars, line 14 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h4[^>]*>LoremIpsumDolor</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel4LineMinusOneChar() {
+		String html = parseToHtml("Lorem-Ipsum\n++++++++++"); //title 11 chars, line 10 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>Lorem-Ipsum</h5>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel1LinePlusOneChar() {
+		String html = parseToHtml("Lorem Ipsum\n------------"); //title 11 chars, line 12 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>Lorem Ipsum</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel1LineMinusTwoChars() {
+		String html = parseToHtml("Lorem Ipsum\n---------"); //title 11 chars, line 9 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h2[^>]*>Lorem Ipsum</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel2LineMinusTwoChars() {
+		String html = parseToHtml("Lorem Ipsum Dolor\n~~~~~~~~~~~~~~~"); //title 17 chars, line 15 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h3[^>]*>Lorem Ipsum Dolor</h3>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel3LineMinusTwoChars() {
+		String html = parseToHtml("LoremIpsumDolor\n^^^^^^^^^^^^^"); //title 15 chars, line 13 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h4[^>]*>LoremIpsumDolor</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel4LineMinusTwoChars() {
+		String html = parseToHtml("Lorem-Ipsum\n+++++++++"); //title 11 chars, line 9 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h5[^>]*>Lorem-Ipsum</h5>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel1LinePlusTwoChars() {
+		String html = parseToHtml("Lorem Ipsum\n-------------"); //title 11 chars, line 13 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h2[^>]*>Lorem Ipsum</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel2LinePlusTwoChars() {
+		String html = parseToHtml("Lorem Ipsum Dolor\n~~~~~~~~~~~~~~~~~~~"); //title 17 chars, line 18 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h3[^>]*>Lorem Ipsum Dolor</h3>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel3LinePlusTwoChars() {
+		String html = parseToHtml("LoremIpsumDolor\n^^^^^^^^^^^^^^^^^"); //title 15 chars, line 16 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h4[^>]*>LoremIpsumDolor</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel4LinePlusTwoChars() {
+		String html = parseToHtml("Lorem-Ipsum\n+++++++++++++"); //title 11 chars, line 12 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h5[^>]*>Lorem-Ipsum</h5>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel1TitleTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H2     \n------------------------");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>Title test underlined H2</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel2TitleTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H3\t\n~~~~~~~~~~~~~~~~~~~~~~~~");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h3[^>]*>Title test underlined H3</h3>")
+				.matcher(html)
+				.find());
+		}
+
+	public void testUnderlinedLevel3TitleTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H4   \t\n^^^^^^^^^^^^^^^^^^^^^^^^");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h4[^>]*>Title test underlined H4</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel4TitleTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H5\t  \n++++++++++++++++++++++++");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>Title test underlined H5</h5>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel1LineWithTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H2\n------------------------     ");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>Title test underlined H2</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel2LineWithTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H3\n~~~~~~~~~~~~~~~~~~~~~~~~\t");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h3[^>]*>Title test underlined H3</h3>")
+				.matcher(html)
+				.find());
+		}
+
+	public void testUnderlinedLevel3LineWithTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H4\n^^^^^^^^^^^^^^^^^^^^^^^^\t\t");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h4[^>]*>Title test underlined H4</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel4LineWithTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H5\n++++++++++++++++++++++++\t  ");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>Title test underlined H5</h5>")
+				.matcher(html)
+				.find());
+	}
 
 	public void testPreBlockIndentedByFourSpaces() {
 		String html = parseToHtml("    This is a pre block.");

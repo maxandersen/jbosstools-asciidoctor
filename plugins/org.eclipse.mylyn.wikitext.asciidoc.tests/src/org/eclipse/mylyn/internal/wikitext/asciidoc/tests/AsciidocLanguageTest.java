@@ -14,8 +14,6 @@ package org.eclipse.mylyn.internal.wikitext.asciidoc.tests;
 import org.eclipse.mylyn.wikitext.tests.TestUtil;
 
 /**
- * http://daringfireball.net/projects/asciidoc/syntax
- *
  * @author Stefan Seelmann
  */
 public class AsciidocLanguageTest extends AsciidocLanguageTestBase {

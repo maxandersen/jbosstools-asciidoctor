@@ -30,7 +30,7 @@ import org.eclipse.mylyn.wikitext.core.parser.markup.phrase.HtmlStartTagPhraseMo
 import org.eclipse.mylyn.wikitext.core.parser.markup.token.PatternLineBreakReplacementToken;
 
 /**
- * A markup language implementing Asciidoc syntax. http://daringfireball.net/projects/asciidoc/syntax
+ * A markup language implementing Asciidoc syntax.
  *
  * @author Stefan Seelmann
  * @since 1.8
