@@ -45,8 +45,8 @@ public class AsciidocLanguage extends AbstractMarkupLanguage {
 	protected void addStandardTokens(PatternBasedSyntax tokenSyntax) {
 		// HTML entities are preserved
 		tokenSyntax.add(new PreserverHtmlEntityToken());
-		// two or more spaces at end of line force a line break
-		tokenSyntax.add(new PatternLineBreakReplacementToken("( {2,})$")); //$NON-NLS-1$
+		// line ending with a + will cause a line Break
+		tokenSyntax.add(new PatternLineBreakReplacementToken("(\\s\\+)\\s*")); //$NON-NLS-1$
 	}
 
 	@Override

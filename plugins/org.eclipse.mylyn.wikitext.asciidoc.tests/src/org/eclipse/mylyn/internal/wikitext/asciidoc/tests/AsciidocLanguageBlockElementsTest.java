@@ -55,7 +55,6 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 		assertTrue(html.contains("<p>another paragraph</p>"));
 	}
 
-	/* FIXME: this is the real line breack in paragraph syntax.
 	public void testLineBreakInParagraph() {
 		String html = parseToHtml("line  1 +\nline  2 +\nline  3");
 		TestUtil.println("HTML: " + html);
@@ -64,7 +63,25 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.matcher(html)
 				.find());
 	}
-	*/
+
+	public void testLineBreakInParagraphWithTabAndMultipleSpaces() {
+		String html = parseToHtml("line  1   +\nline  2\t+\nline  3");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<p>line  1  <br/?>\nline  2<br/?>\nline  3</p>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testLineBreakInParagraphTrailingSpaces() {
+		String html = parseToHtml("line  1 +   \nline  2 +\t\nline  3");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<p>line  1<br/?>\nline  2<br/?>\nline  3</p>")
+				.matcher(html)
+				.find());
+	}
+
 
 	/*
 	 * Headers.
