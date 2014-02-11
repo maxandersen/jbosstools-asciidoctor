@@ -55,6 +55,12 @@ public class PreformattedBlock extends Block {
 		String intent = matcher.group(1);
 		String content = matcher.group(2);
 
+		//If there is no content, close the bloc:
+		if (content.length() == 0) {
+			setClosed(true);
+			return 0;
+		}
+
 		// next line, does not convert to line break
 		if (blockLineCount > 0) {
 			builder.characters("\n"); //$NON-NLS-1$

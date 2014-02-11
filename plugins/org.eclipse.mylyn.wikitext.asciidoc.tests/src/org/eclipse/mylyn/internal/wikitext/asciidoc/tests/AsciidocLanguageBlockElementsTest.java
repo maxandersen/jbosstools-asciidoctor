@@ -11,8 +11,6 @@
 
 package org.eclipse.mylyn.internal.wikitext.asciidoc.tests;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.regex.Pattern;
 
 import org.eclipse.mylyn.wikitext.tests.TestUtil;
@@ -442,7 +440,26 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 		assertTrue(html.contains(expectedHtml));
 	}
 
-	//TODO: no "continue after empty line" in pre block.
+	public void testPreBlockMultiLineIndentedByFourSpacesNoContinueAfterEmptyLine() {
+		String html = parseToHtml("    aaa\n    bbb\n    ccc\n        \n    after empty line");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<pre>aaa\nbbb\nccc</pre>"));
+		assertTrue(html.contains("<pre>after empty line</pre>"));
+	}
+
+	public void testPreBlockMultiLineIndentedByFourSpacesNoContinueAfterTabLine() {
+		String html = parseToHtml("    aaa\n    bbb\n    ccc\n    \t\t\n    after empty line");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<pre>aaa\nbbb\nccc</pre>"));
+		assertTrue(html.contains("<pre>after empty line</pre>"));
+	}
+
+	public void testPreBlockMultiLineIndentedByOneTabNoContinueAfterEmptyLine() {
+		String html = parseToHtml("\taaa\n\tbbb\n\tccc\n\t\n\tafter empty line");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<pre>aaa\nbbb\nccc</pre>"));
+		assertTrue(html.contains("<pre>after empty line</pre>"));
+	}
 
 	/**
 	 * Within a pre block, ampersands (&) and angle brackets (< and >) are automatically converted into HTML entities.
