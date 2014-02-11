@@ -24,28 +24,35 @@ import org.eclipse.mylyn.wikitext.core.parser.markup.Block;
  */
 public class HeadingBlock extends Block {
 
-	private static final Pattern pattern = Pattern.compile("(={2,5})\\s*(.+?)\\s*(?:=*\\s*)?"); //$NON-NLS-1$
+	private static final Pattern pattern = Pattern.compile("(={2,})\\s*(.+?)(\\s*)((?:=*\\s*))?"); //$NON-NLS-1$
 
 	private Matcher matcher;
 
 	@Override
 	public boolean canStart(String line, int lineOffset) {
 		if (lineOffset == 0) {
-			matcher = pattern.matcher(line);
-			return matcher.matches();
-		} else {
-			matcher = null;
-			return false;
+			Matcher m = pattern.matcher(line);
+			if(m.matches() && m.group(1).length() < 6) {
+				matcher = m;
+				return true;
+			}
 		}
+		matcher = null;
+		return false;
 	}
 
 	@Override
 	public int processLineContent(String line, int offset) {
 		int level = matcher.group(1).length();
 		String text = matcher.group(2);
+		String closingGroup = matcher.group(4);
 
 		builder.beginHeading(level, new Attributes());
 		builder.characters(text);
+		if(closingGroup.length() > 0 && closingGroup.length() != level) {
+			builder.characters(matcher.group(3));
+			builder.characters(closingGroup);
+		}
 		builder.endHeading();
 
 		setClosed(true);

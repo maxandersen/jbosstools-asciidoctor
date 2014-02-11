@@ -105,13 +105,23 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.find());
 	}
 
-	/* FIXME:
 	public void testEqStyleHeaderNotH6() {
 		String html = parseToHtml("====== This is not h6");
 		TestUtil.println("HTML: " + html);
 		assertTrue(html.contains("<p>====== This is not h6</p>"));
 	}
-	*/
+
+	public void testEqStyleHeaderNoTitleWith7eq() {
+		String html = parseToHtml("======== This is not a title (7)");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>======== This is not a title (7)</p>"));
+	}
+
+	public void testEqStyleHeaderNoTitleWith10eq() {
+		String html = parseToHtml("=========== This is not a title (10)");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>=========== This is not a title (10)</p>"));
+	}
 
 	/*
 	 * Optionally, you may "close" equals-style headers.
@@ -152,16 +162,34 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.find());
 	}
 
-	/* FIXME:
+	public void testClosedEqStyleHeaderLevel4WithSpaces() {
+		String html = parseToHtml("===== This is H5 with spaces    =====");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>This is H5 with spaces</h5>")
+				.matcher(html)
+				.find());
+	}
+
 	public void testClosedEqStyleHeaderNotH6() {
 		String html = parseToHtml("====== This is also not h6 ======");
 		TestUtil.println("HTML: " + html);
 		assertTrue(html.contains("<p>====== This is also not h6 ======</p>"));
 	}
-	 */
 
-	/* FIXME:
-	public void testClosedEqStyleHeaderWithMoreClosingHashes() {
+	public void testClosedEqStyleHeaderNoTitleWith7eq() {
+		String html = parseToHtml("======= This is also not a title (7) =======");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>======= This is also not a title (7) =======</p>"));
+	}
+
+	public void testClosedEqStyleHeaderNoTitleWith12eq() {
+		String html = parseToHtml("============ This is also not a title (12) ============");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>============ This is also not a title (12) ============</p>"));
+	}
+
+	public void testClosedEqStyleHeaderWithMoreClosingEq() {
 		String html = parseToHtml("== This is an H2 again ==================");
 		TestUtil.println("HTML: " + html);
 		assertTrue(Pattern.compile(
@@ -169,10 +197,17 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.matcher(html)
 				.find());
 	}
-	*/
 
-	/* FIXME:
-	public void testClosedAtxStyleHeaderWithLessCosingHashes() {
+	public void testClosedEqStyleHeaderWithMoreClosingEqAndSpaces() {
+		String html = parseToHtml("== This is an H2 with spaces     ====");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>This is an H2 with spaces     ====</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testClosedAtxStyleHeaderWithLessCosingEq() {
 		String html = parseToHtml("===== This is an H5 again ==");
 		TestUtil.println("HTML: " + html);
 		assertTrue(Pattern.compile(
@@ -180,8 +215,6 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.matcher(html)
 				.find());
 	}
-	*/
-
 
 	/*
 	 * "underlined" headers
