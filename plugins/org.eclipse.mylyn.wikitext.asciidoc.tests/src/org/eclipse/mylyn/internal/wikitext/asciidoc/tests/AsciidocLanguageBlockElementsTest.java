@@ -55,7 +55,6 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 		assertTrue(html.contains("<p>another paragraph</p>"));
 	}
 
-	/* FIXME: this is the real line breack in paragraph syntax.
 	public void testLineBreakInParagraph() {
 		String html = parseToHtml("line  1 +\nline  2 +\nline  3");
 		TestUtil.println("HTML: " + html);
@@ -64,7 +63,25 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.matcher(html)
 				.find());
 	}
-	*/
+
+	public void testLineBreakInParagraphWithTabAndMultipleSpaces() {
+		String html = parseToHtml("line  1   +\nline  2\t+\nline  3");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<p>line  1  <br/?>\nline  2<br/?>\nline  3</p>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testLineBreakInParagraphTrailingSpaces() {
+		String html = parseToHtml("line  1 +   \nline  2 +\t\nline  3");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<p>line  1<br/?>\nline  2<br/?>\nline  3</p>")
+				.matcher(html)
+				.find());
+	}
+
 
 	/*
 	 * Headers.
@@ -105,13 +122,23 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.find());
 	}
 
-	/* FIXME:
 	public void testEqStyleHeaderNotH6() {
 		String html = parseToHtml("====== This is not h6");
 		TestUtil.println("HTML: " + html);
 		assertTrue(html.contains("<p>====== This is not h6</p>"));
 	}
-	*/
+
+	public void testEqStyleHeaderNoTitleWith7eq() {
+		String html = parseToHtml("======== This is not a title (7)");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>======== This is not a title (7)</p>"));
+	}
+
+	public void testEqStyleHeaderNoTitleWith10eq() {
+		String html = parseToHtml("=========== This is not a title (10)");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>=========== This is not a title (10)</p>"));
+	}
 
 	/*
 	 * Optionally, you may "close" equals-style headers.
@@ -152,16 +179,34 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.find());
 	}
 
-	/* FIXME:
+	public void testClosedEqStyleHeaderLevel4WithSpaces() {
+		String html = parseToHtml("===== This is H5 with spaces    =====");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>This is H5 with spaces</h5>")
+				.matcher(html)
+				.find());
+	}
+
 	public void testClosedEqStyleHeaderNotH6() {
 		String html = parseToHtml("====== This is also not h6 ======");
 		TestUtil.println("HTML: " + html);
 		assertTrue(html.contains("<p>====== This is also not h6 ======</p>"));
 	}
-	 */
 
-	/* FIXME:
-	public void testClosedEqStyleHeaderWithMoreClosingHashes() {
+	public void testClosedEqStyleHeaderNoTitleWith7eq() {
+		String html = parseToHtml("======= This is also not a title (7) =======");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>======= This is also not a title (7) =======</p>"));
+	}
+
+	public void testClosedEqStyleHeaderNoTitleWith12eq() {
+		String html = parseToHtml("============ This is also not a title (12) ============");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<p>============ This is also not a title (12) ============</p>"));
+	}
+
+	public void testClosedEqStyleHeaderWithMoreClosingEq() {
 		String html = parseToHtml("== This is an H2 again ==================");
 		TestUtil.println("HTML: " + html);
 		assertTrue(Pattern.compile(
@@ -169,10 +214,17 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.matcher(html)
 				.find());
 	}
-	*/
 
-	/* FIXME:
-	public void testClosedAtxStyleHeaderWithLessCosingHashes() {
+	public void testClosedEqStyleHeaderWithMoreClosingEqAndSpaces() {
+		String html = parseToHtml("== This is an H2 with spaces     ====");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>This is an H2 with spaces     ====</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testClosedAtxStyleHeaderWithLessCosingEq() {
 		String html = parseToHtml("===== This is an H5 again ==");
 		TestUtil.println("HTML: " + html);
 		assertTrue(Pattern.compile(
@@ -180,8 +232,6 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.matcher(html)
 				.find());
 	}
-	*/
-
 
 	/*
 	 * "underlined" headers
@@ -222,7 +272,194 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 				.find());
 	}
 
-	//TODO: the "underline" line need to match exactly the length of the title.
+	public void testUnderlinedLevel1LineMinusOneChar() {
+		String html = parseToHtml("Lorem Ipsum\n----------"); //title 11 chars, line 10 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>Lorem Ipsum</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel2LineMinusOneChar() {
+		String html = parseToHtml("Lorem Ipsum Dolor\n~~~~~~~~~~~~~~~~"); //title 17 chars, line 16 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h3[^>]*>Lorem Ipsum Dolor</h3>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel3LineMinusOneChar() {
+		String html = parseToHtml("LoremIpsumDolor\n^^^^^^^^^^^^^^"); //title 15 chars, line 14 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h4[^>]*>LoremIpsumDolor</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel4LineMinusOneChar() {
+		String html = parseToHtml("Lorem-Ipsum\n++++++++++"); //title 11 chars, line 10 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>Lorem-Ipsum</h5>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel1LinePlusOneChar() {
+		String html = parseToHtml("Lorem Ipsum\n------------"); //title 11 chars, line 12 chars
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>Lorem Ipsum</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel1LineMinusTwoChars() {
+		String html = parseToHtml("Lorem Ipsum\n---------"); //title 11 chars, line 9 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h2[^>]*>Lorem Ipsum</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel2LineMinusTwoChars() {
+		String html = parseToHtml("Lorem Ipsum Dolor\n~~~~~~~~~~~~~~~"); //title 17 chars, line 15 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h3[^>]*>Lorem Ipsum Dolor</h3>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel3LineMinusTwoChars() {
+		String html = parseToHtml("LoremIpsumDolor\n^^^^^^^^^^^^^"); //title 15 chars, line 13 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h4[^>]*>LoremIpsumDolor</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel4LineMinusTwoChars() {
+		String html = parseToHtml("Lorem-Ipsum\n+++++++++"); //title 11 chars, line 9 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h5[^>]*>Lorem-Ipsum</h5>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel1LinePlusTwoChars() {
+		String html = parseToHtml("Lorem Ipsum\n-------------"); //title 11 chars, line 13 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h2[^>]*>Lorem Ipsum</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel2LinePlusTwoChars() {
+		String html = parseToHtml("Lorem Ipsum Dolor\n~~~~~~~~~~~~~~~~~~~"); //title 17 chars, line 18 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h3[^>]*>Lorem Ipsum Dolor</h3>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel3LinePlusTwoChars() {
+		String html = parseToHtml("LoremIpsumDolor\n^^^^^^^^^^^^^^^^^"); //title 15 chars, line 16 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h4[^>]*>LoremIpsumDolor</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testNotUnderlinedLevel4LinePlusTwoChars() {
+		String html = parseToHtml("Lorem-Ipsum\n+++++++++++++"); //title 11 chars, line 12 chars
+		TestUtil.println("HTML: " + html);
+		assertFalse(Pattern.compile(
+				"<h5[^>]*>Lorem-Ipsum</h5>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel1TitleTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H2     \n------------------------");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>Title test underlined H2</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel2TitleTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H3\t\n~~~~~~~~~~~~~~~~~~~~~~~~");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h3[^>]*>Title test underlined H3</h3>")
+				.matcher(html)
+				.find());
+		}
+
+	public void testUnderlinedLevel3TitleTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H4   \t\n^^^^^^^^^^^^^^^^^^^^^^^^");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h4[^>]*>Title test underlined H4</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel4TitleTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H5\t  \n++++++++++++++++++++++++");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>Title test underlined H5</h5>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel1LineWithTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H2\n------------------------     ");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h2[^>]*>Title test underlined H2</h2>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel2LineWithTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H3\n~~~~~~~~~~~~~~~~~~~~~~~~\t");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h3[^>]*>Title test underlined H3</h3>")
+				.matcher(html)
+				.find());
+		}
+
+	public void testUnderlinedLevel3LineWithTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H4\n^^^^^^^^^^^^^^^^^^^^^^^^\t\t");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h4[^>]*>Title test underlined H4</h4>")
+				.matcher(html)
+				.find());
+	}
+
+	public void testUnderlinedLevel4LineWithTrailingSpaces() {
+		String html = parseToHtml("Title test underlined H5\n++++++++++++++++++++++++\t  ");
+		TestUtil.println("HTML: " + html);
+		assertTrue(Pattern.compile(
+				"<h5[^>]*>Title test underlined H5</h5>")
+				.matcher(html)
+				.find());
+	}
 
 	public void testPreBlockIndentedByFourSpaces() {
 		String html = parseToHtml("    This is a pre block.");
@@ -253,7 +490,26 @@ public class AsciidocLanguageBlockElementsTest extends AsciidocLanguageTestBase 
 		assertTrue(html.contains(expectedHtml));
 	}
 
-	//TODO: no "continue after empty line" in pre block.
+	public void testPreBlockMultiLineIndentedByFourSpacesNoContinueAfterEmptyLine() {
+		String html = parseToHtml("    aaa\n    bbb\n    ccc\n        \n    after empty line");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<pre>aaa\nbbb\nccc</pre>"));
+		assertTrue(html.contains("<pre>after empty line</pre>"));
+	}
+
+	public void testPreBlockMultiLineIndentedByFourSpacesNoContinueAfterTabLine() {
+		String html = parseToHtml("    aaa\n    bbb\n    ccc\n    \t\t\n    after empty line");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<pre>aaa\nbbb\nccc</pre>"));
+		assertTrue(html.contains("<pre>after empty line</pre>"));
+	}
+
+	public void testPreBlockMultiLineIndentedByOneTabNoContinueAfterEmptyLine() {
+		String html = parseToHtml("\taaa\n\tbbb\n\tccc\n\t\n\tafter empty line");
+		TestUtil.println("HTML: " + html);
+		assertTrue(html.contains("<pre>aaa\nbbb\nccc</pre>"));
+		assertTrue(html.contains("<pre>after empty line</pre>"));
+	}
 
 	/**
 	 * Within a pre block, ampersands (&) and angle brackets (< and >) are automatically converted into HTML entities.
