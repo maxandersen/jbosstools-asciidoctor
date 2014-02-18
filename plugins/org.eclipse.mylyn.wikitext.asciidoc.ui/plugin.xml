@@ -14,7 +14,34 @@
          <template name="==== " description="%template.description.h4" content="\n==== ${text}\n\n" block="true"/>
          <template name="===== " description="%template.description.h5" content="\n===== ${text}\n\n" block="true"/>
          <template name="====== " description="%template.description.h6" content="\n====== ${text}\n\n" block="true"/>
-
+         <template name="NOTE" description="Note admonition" content="\nNOTE: ${text}\n\n" block="true"/>
+         <template name="TIP" description="Tip admonition" content="\nNOTE: ${text}\n\n" block="true"/>
+         <template name="IMPORTANT" description="Warning admonition" content="\nNOTE: ${text}\n\n" block="true"/>
+         <template name="CAUTION" description="Caution admonition" content="\nNOTE: ${text}\n\n" block="true"/>
+   
+   		 <template name="include" description="Include another file" content="\ninclude::${text}[]\n\n" block="true"/>
+   	
+   		  <template name="* " description="Unordered list" content="\n* ${text}\n\n" block="true"/>
+   		  <template name=". " description="Ordered list" content="\n. ${text}\n\n" block="true"/>
+   
+   
+   	     <template name="_" description="Italic" content="_${text}_" />
+   	     <template name="*" description="Bold" content="*${text}*" />
+   	     <template name="**" description="Bolder" content="**${text}**" />
+   	     <template name="+" description="Monospace" content="+${text}+" />
+   	     <template name="`" description="inline literal (Monospace without substitutions)" content="`${text}`" />
+   	     
+   	     <template name="^" description="Superscript" content="^${text}^" />
+   	     
+   	     <template name="~" description="Subscript" content="~${text}~" />
+   	     
+         <template name="'" description="Single smart quotes" content="`${text}'" />
+   	     <template name="''" description="Double smart quotes" content="``${text}''" />
+   	     
+   	     
+   	     
+   	     
+        
       </templates>
    </extension>
 </plugin>
