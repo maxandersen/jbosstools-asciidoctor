@@ -7,6 +7,12 @@ Demo: http://screencast.com/t/tkHe4nq7F
 Contributions *very* welcome - this is just a proof-of-concept for now but
 feel free to submit patches and/or fork it and make it something different :)
 
+Open Eclipse bug is [Bug 418563 - support for Asciidoc ](https://bugs.eclipse.org/bugs/show_bug.cgi?id=418563)
+
+Update site for 2014 build is <http://dgolovin.github.io/jbosstools-asciidoctor/>
+
+For Ascii handling without plugin, see video [Basic eclipse asciidoc w/live reload](http://vimeo.com/66051125)
+
 ## How to build
 
 To import into eclipse we need to tell maven to go get the mvn dependencies. 
