@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+	<description>To install these features, point Eclipse at this site.</description>
+	<!-- JBoss Tools asciidoctor Nightly Build Update Site -->
+	<category-def label="JBoss Tools asciidoctor Nightly Build Update Site" name="JBoss Tools asciidoctor Nightly Build Update Site">
+		<description>JBoss Tools asciidoctor Nightly Build Update Site: contains all features in this build.</description>
+	</category-def>
+	<feature url="features/org.jboss.tools.asciidoctor.feature_1.0.0.Alpha1-v20150116-1155.jar" id="org.jboss.tools.asciidoctor.feature" version="1.0.0.Alpha1-v20150116-1155">
+		<category name="JBoss Tools asciidoctor Nightly Build Update Site"/>
+	</feature>
+	<!-- Sources -->
+	<feature url="features/org.jboss.tools.asciidoctor.feature.source_1.0.0.Alpha1-v20150116-1155.jar" id="org.jboss.tools.asciidoctor.feature.source" version="1.0.0.Alpha1-v20150116-1155">
+		<category name="JBoss Tools asciidoctor Nightly Build Update Site"/>
+	</feature>
+</site>
