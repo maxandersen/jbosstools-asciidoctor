@@ -1,3 +1,8 @@
+
+OUTDATED: the development moved to Mylyn
+
+The content of this repository is my personal one and not related to official JBoss Tools entry
+
 # JBoss Tools Asciidoctor experiment
 
 Experiment to check if can load and render asciidoc docs in Eclipse.
