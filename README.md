@@ -1,6 +1,8 @@
-# JBoss Tools Asciidoctor experiment
+# Asciidoctor Eclipse plugin
 
-Experiment to check if can load and render asciidoc docs in Eclipse.
+**Please see https://wiki.eclipse.org/Mylyn/WikiText/AsciiDoc if you have found this Googling for "Asciidoctor Eclipse plugin".** *(This project was the original foundation which lead to AsciiDoc support in Eclipse Mylyn WikiText.  This project is thus no longer actively maintained.)*
+
+This was an experiment to check if one can load and render asciidoc docs in Eclipse.
 
 Demo: http://screencast.com/t/tkHe4nq7F
 
